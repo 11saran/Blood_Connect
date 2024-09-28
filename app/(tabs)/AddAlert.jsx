@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import Colors from "../../constants/Colors";
 import EvilIcons from "@expo/vector-icons/EvilIcons";
+import { router } from "expo-router";
 
 export default function AddAlert() {
   const [selectedBloodType, setSelectedBloodType] = useState("");
@@ -64,7 +65,10 @@ export default function AddAlert() {
           <Text style={styles.findDonorButtonText}>Find Donor</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.backButton}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => router.push("(tabs)/Home")}
+        >
           <Text style={styles.backButtonText}>Back</Text>
         </TouchableOpacity>
       </View>

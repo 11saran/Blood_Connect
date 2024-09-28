@@ -1,20 +1,35 @@
 import React from "react";
-import {
-  View,
-  Text,
-  Switch,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import Colors from "../../constants/Colors";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { router } from "expo-router";
+
 export default function User() {
   const [availableToDonate, setAvailableToDonate] = React.useState(false);
   const [notification, setNotification] = React.useState(false);
   const [allowTracking, setAllowTracking] = React.useState(false);
+
+  // Custom toggle switch component
+  const CustomToggle = ({ isEnabled, toggleSwitch }) => {
+    return (
+      <TouchableOpacity
+        style={[
+          styles.switchContainer,
+          isEnabled ? styles.switchEnabled : styles.switchDisabled,
+        ]}
+        onPress={toggleSwitch}
+      >
+        <View
+          style={[
+            styles.switchThumb,
+            isEnabled ? styles.switchThumbEnabled : styles.switchThumbDisabled,
+          ]}
+        />
+      </TouchableOpacity>
+    );
+  };
+
   return (
     <View style={styles.container}>
       {/* Header Section */}
@@ -51,38 +66,26 @@ export default function User() {
       <View style={styles.body}>
         <View style={styles.row}>
           <Text style={styles.label}>Available to Donate</Text>
-          <View style={styles.switchContainer}>
-            <Switch
-              value={availableToDonate}
-              onValueChange={() => setAvailableToDonate(!availableToDonate)}
-              trackColor={{ false: Colors.GRAY, true: Colors.RED }}
-              thumbColor={availableToDonate ? Colors.WHITE : Colors.GRAY}
-            />
-          </View>
+          <CustomToggle
+            isEnabled={availableToDonate}
+            toggleSwitch={() => setAvailableToDonate(!availableToDonate)}
+          />
         </View>
 
         <View style={styles.row}>
           <Text style={styles.label}>Notification</Text>
-          <View style={styles.switchContainer}>
-            <Switch
-              value={notification}
-              onValueChange={() => setNotification(!notification)}
-              trackColor={{ false: Colors.GRAY, true: Colors.RED }}
-              thumbColor={notification ? Colors.WHITE : Colors.GRAY}
-            />
-          </View>
+          <CustomToggle
+            isEnabled={notification}
+            toggleSwitch={() => setNotification(!notification)}
+          />
         </View>
 
         <View style={styles.row}>
           <Text style={styles.label}>Allow Tracking</Text>
-          <View style={styles.switchContainer}>
-            <Switch
-              value={allowTracking}
-              onValueChange={() => setAllowTracking(!allowTracking)}
-              trackColor={{ false: Colors.GRAY, true: Colors.RED }}
-              thumbColor={allowTracking ? Colors.WHITE : Colors.GRAY}
-            />
-          </View>
+          <CustomToggle
+            isEnabled={allowTracking}
+            toggleSwitch={() => setAllowTracking(!allowTracking)}
+          />
         </View>
 
         <View style={styles.manageAddress}>
@@ -125,6 +128,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.WHITE,
     borderWidth: 2,
     backgroundColor: Colors.WHITE,
+    top:10
   },
   username: {
     fontSize: 24,
@@ -136,6 +140,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-around",
+    
   },
   bloodType: {
     fontSize: 32,
@@ -153,12 +158,13 @@ const styles = StyleSheet.create({
     fontFamily: "inter-extrabold",
   },
   nextDonation: {
-    fontSize: 13,
+    fontSize: 12,
     color: Colors.BLACK,
     fontFamily: "inter-bold",
   },
   body: {
     padding: 20,
+    
   },
   row: {
     flexDirection: "row",
@@ -166,13 +172,34 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginVertical: 10,
   },
-  switchContainer: {
-    transform: [{ scaleX: 1.8 }, { scaleY: 1.8 }],
+  label:{
+     fontFamily:"inter-extrabold",
+     fontSize:16
   },
-  label: {
-    fontSize: 16,
-    fontFamily: "inter-extrabold",
-    color: Colors.BLACK,
+  switchContainer: {
+    width: 50,
+    height: 30,
+    borderRadius: 20,
+    padding: 3,
+    justifyContent: "center",
+  },
+  switchEnabled: {
+    backgroundColor: Colors.RED,
+  },
+  switchDisabled: {
+    backgroundColor: Colors.ASE,
+  },
+  switchThumb: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: Colors.WHITE,
+  },
+  switchThumbEnabled: {
+    alignSelf: "flex-end",
+  },
+  switchThumbDisabled: {
+    alignSelf: "flex-start",
   },
   manageAddress: {
     flexDirection: "row",
@@ -184,7 +211,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginVertical: 20,
-   
   },
   logoutText: {
     color: Colors.BLACK,

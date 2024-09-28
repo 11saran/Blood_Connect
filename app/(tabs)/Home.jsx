@@ -8,7 +8,7 @@ import {
   FlatList,
 } from "react-native";
 import Colors from "../../constants/Colors";
-
+import { router } from "expo-router";
 
 export default function HomeScreen({ navigation }) {
   // Images for the image slider
@@ -32,43 +32,6 @@ export default function HomeScreen({ navigation }) {
     return () => clearInterval(interval); // Cleanup interval on component unmount
   }, []);
 
-  const options = [
-    {
-      id: "1",
-      title: "Me as Donor",
-      icon: require("./../../assets/images/h1Image.png"),
-    }, 
-    {
-      id: "2",
-      title: "Permanent Donor",
-      icon: require("./../../assets/images/h2Image.png"),
-    },
-    {
-      id: "3",
-      title: "Disease",
-      icon: require("./../../assets/images/h3Image.png"),
-    },
-    {
-      id: "4",
-      title: "Camp Details",
-      icon: require("./../../assets/images/h4Image.png"),
-    },
-  ];
-
-  // Render each option as a button
-  const renderOption = ({ item }) => (
-    <TouchableOpacity
-      style={styles.optionContainer}
-      onPress={() => {
-        // Add your navigation or onPress action here
-        console.log(`${item.title} pressed`);
-      }}
-    >
-      <Image source={item.icon} style={styles.optionIcon} />
-      <Text style={styles.optionText}>{item.title}</Text>
-    </TouchableOpacity>
-  );
-
   return (
     <View style={styles.container}>
       {/* Image slider */}
@@ -83,14 +46,47 @@ export default function HomeScreen({ navigation }) {
         Join Blood Connect - Your Chance to Make a Difference!
       </Text>
 
-      <View style={{height:400}}>
-        <FlatList
-          data={options}
-          renderItem={renderOption}
-          keyExtractor={(item) => item.id}
-          numColumns={2}
-          contentContainerStyle={styles.grid}
-        />
+      <View style={styles.gridContainer}>
+        <View style={styles.gridItem}>
+          <TouchableOpacity onPress={() => router.push("options/MeAsDonor")}>
+            <Image
+              source={require("./../../assets/images/h1Image.png")}
+              style={styles.optionIcon}
+            />
+            <Text style={styles.optionText}>Me as Donor</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.gridItem}>
+          <TouchableOpacity
+            onPress={() => router.push("options/PermanentDonor")}
+          >
+            <Image
+              source={require("./../../assets/images/h2Image.png")}
+              style={styles.optionIcon}
+            />
+            <Text style={styles.optionText}>Permanent Donor</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.gridItem}>
+          <TouchableOpacity onPress={() => router.push("options/Disease")}>
+            <Image
+              source={require("./../../assets/images/h3Image.png")}
+              style={styles.optionIcon}
+            />
+            <Text style={styles.optionText}>Disease</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.gridItem}>
+          <TouchableOpacity
+            onPress={() => router.push("options/CampDeatails")}
+          >
+            <Image
+              source={require("./../../assets/images/h4Image.png")}
+              style={styles.optionIcon}
+            />
+            <Text style={styles.optionText}>Camp Details</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
@@ -103,41 +99,53 @@ const styles = StyleSheet.create({
   },
   imageSlider: {
     width: "100%",
-    height: 200,
+    height: 250,
   },
   title: {
-    fontSize: 18,
-    fontFamily:"inter-extrabold",
-    padding:10,
-   
+    fontSize: 20,
+    fontFamily: "inter-extrabold",
+    padding: 15,
     marginVertical: 10,
     color: Colors.BLACK,
-    top:48
+    top: 15,
   },
-  grid: {
-    justifyContent: "center",
-    top: 110,
-    padding:50,
-    height:275
+  gridContainer: {
+    width: 327,
+    height: 318,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-around",
+    backgroundColor: Colors.WHITE1,
+    alignSelf: "center",
+    borderRadius: 20,
+    borderWidth: 0.51,
+    top:55,
+    
+    
   },
-  optionContainer: {
-    backgroundColor: "#e74c3c",
-    flex: 1,
-    margin: 10,
+  gridItem: {
+    backgroundColor: Colors.RED1,
+    marginVertical: 15,
+    marginHorizontal: 15,
     height: 130,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 10,
+    width: 130,
+    borderRadius: 20,
+    
+  
   },
   optionIcon: {
-    width: 40,
-    height: 40,
+    width: 58,
+    height: 58,
     marginBottom: 10,
+    alignSelf:'center',
+    top:10,
   },
   optionText: {
     fontSize: 16,
-    color: "#fff",
-    fontWeight: "bold",
+    color:Colors.WHITE,
     textAlign: "center",
+    fontFamily:"inter-extrabold",
+    padding:15,
+    top:-15
   },
 });
