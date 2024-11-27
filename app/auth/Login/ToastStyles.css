@@ -1,0 +1,42 @@
+/* Add these styles in your CSS file */
+
+.toastify__toast {
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid;
+    background-color: transparent; /* Transparent background for outlined look */
+  }
+  
+  .toastify__toast--success {
+    border-color: #4caf50; /* Green outline for success */
+    color: #4caf50;
+  }
+  
+  .toastify__toast--error {
+    border-color: #f44336; /* Red outline for error */
+    color: #f44336;
+  }
+  
+  .toastify__toast--info {
+    border-color: #2196f3; /* Blue outline for info */
+    color: #2196f3;
+  }
+  
+  .toastify__toast--warning {
+    border-color: #ff9800; /* Orange outline for warning */
+    color: #ff9800;
+  }
+  
+  /* Customize the Toastify close button */
+  .toastify__close-button {
+    color: inherit;
+    opacity: 0.8;
+  }
+  
+  .toastify__close-button:hover {
+    opacity: 1;
+  }
+  
