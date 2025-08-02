@@ -4,9 +4,10 @@ const User = require('../models/userModel');
 const ADMIN_SECRET_CODE = process.env.ADMIN_CODE || 'ADMIN1234';
 
 const UserService = {
+  // Register
   async register({ role, email, password, adminCode }) {
     const existingUsers = await User.findByEmail(email);
-    if (existingUsers.length > 0) throw new Error('Email already exists');
+    if (existingUsers && existingUsers.length > 0) throw new Error('Email already exists');
 
     if (role === 'admin') {
       if (!adminCode || adminCode !== ADMIN_SECRET_CODE) {
@@ -18,7 +19,7 @@ const UserService = {
     const newUser = { role, email, password: hashedPassword };
 
     const result = await User.create(newUser);
-    const userId = result.insertId;
+    const userId = result.insertId || result.id;
 
     if (role === 'admin') {
       await User.createAdminDetails({ admin_id: userId, admin_code: adminCode });
@@ -27,30 +28,46 @@ const UserService = {
     return { id: userId, role, email };
   },
 
-   async login({ email, password, adminCode }) {
-  if (!email || !password) throw new Error('Email and password are required');
+  // Login
+  async login({ email, password, adminCode }) {
+    if (!email || !password) throw new Error('Email and password are required');
 
-  const users = await User.findByEmail(email.trim());
-  if (users.length === 0) throw new Error('Invalid email or password');
+    const users = await User.findByEmail(email.trim());
+    if (!users || users.length === 0) throw new Error('Invalid email or password');
 
-  const user = users[0];
-  const isPasswordValid = await bcrypt.compare(password.trim(), user.password);
-  if (!isPasswordValid) throw new Error('Invalid email or password');
+    const user = users[0];
+    const isPasswordValid = await bcrypt.compare(password.trim(), user.password);
+    if (!isPasswordValid) throw new Error('Invalid email or password');
 
-  if (user.role === 'admin') {
-    if (!adminCode) throw new Error('Admin code is required');
-    const adminDetails = await User.findAdminDetailsByAdminId(user.id);
-    if (
-      !adminDetails.length ||
-      adminCode.trim().toLowerCase() !== adminDetails[0].admin_code.trim().toLowerCase()
-    ) {
-      throw new Error('Invalid admin code');
+    if (user.role === 'admin') {
+      if (!adminCode) throw new Error('Admin code is required');
+      const adminDetails = await User.findAdminDetailsByAdminId(user.id);
+      if (
+        !adminDetails.length ||
+        adminCode.trim().toLowerCase() !== adminDetails[0].admin_code.trim().toLowerCase()
+      ) {
+        throw new Error('Invalid admin code');
+      }
     }
+
+    const { password: _, ...safeUser } = user;
+    return safeUser;
+  },
+
+  // ✅ Get Users
+  async getUsers(userId = null) {
+    if (userId) {
+      return await User.findById(userId);
+    }
+    return await User.findAll();
+  },
+
+  // ✅ Delete User
+  async deleteUser(userId) {
+    const result = await User.delete(userId);
+    if (result.affectedRows === 0) throw new Error('User not found');
+    return true;
   }
-
-  return user;
-}
-
 };
 
 module.exports = UserService;

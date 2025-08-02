@@ -11,6 +11,11 @@ const User = {
     return rows;
   },
 
+  async findAll() {
+    const [rows] = await db.query("SELECT id, role, email FROM users");
+    return rows;
+  },
+
   async create(user) {
     const [result] = await db.query("INSERT INTO users SET ?", user);
     return result;
@@ -24,6 +29,11 @@ const User = {
   async findAdminDetailsByAdminId(adminId) {
     const [rows] = await db.query("SELECT * FROM admin_details WHERE admin_id = ?", [adminId]);
     return rows;
+  },
+
+  async delete(userId) {
+    const [result] = await db.query("DELETE FROM users WHERE id = ?", [userId]);
+    return result;
   }
 };
 
