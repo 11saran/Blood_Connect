@@ -2,22 +2,29 @@ const db = require('../config/db');
 
 const User = {
   async findByEmail(email) {
-    return db.query("SELECT * FROM users WHERE email = ?", [email]);
+    const [rows] = await db.query("SELECT * FROM users WHERE email = ?", [email]);
+    return rows;
   },
-  async findById(userId) {
-    return db.query("SELECT id, role, email FROM users WHERE id = ?", [userId]);
-  },
-  async findAll() {
-    return db.query("SELECT id, role, email FROM users");
-  },
-  async create(user) {
-    return db.query("INSERT INTO users SET ?", user);
-  },
-  async deleteById(userId) {
-    return db.query("DELETE FROM users WHERE id = ?", [userId]);
-  }
 
-  
+  async findById(userId) {
+    const [rows] = await db.query("SELECT id, role, email FROM users WHERE id = ?", [userId]);
+    return rows;
+  },
+
+  async create(user) {
+    const [result] = await db.query("INSERT INTO users SET ?", user);
+    return result;
+  },
+
+  async createAdminDetails(adminDetails) {
+    const [result] = await db.query("INSERT INTO admin_details SET ?", adminDetails);
+    return result;
+  },
+
+  async findAdminDetailsByAdminId(adminId) {
+    const [rows] = await db.query("SELECT * FROM admin_details WHERE admin_id = ?", [adminId]);
+    return rows;
+  }
 };
 
 module.exports = User;

@@ -45,45 +45,51 @@ export default function Login() {
 
 
   const handleLogin = async () => {
-    if (!validateForm()) return;
+  if (!validateForm()) return;
 
-    if (!form.email || !form.password) {
-      Alert.alert("Login Failed", "Please enter both email and password.");
-      return;
+  try {
+    const payload = {
+      email: form.email.trim(),
+      password: form.password.trim(),
+    };
+
+    // ✅ Include adminCode if selectedRole is "admin"
+    if (form.selectedRole === "admin") {
+      payload.adminCode = form.adminCode.trim();
     }
 
-    try {
-      const response = await axios.post("http://localhost:5000/api-users/login", {
-        email: form.email.trim(),
-        password: form.password.trim(),
+    const response = await axios.post("http://localhost:5000/api-users/login", payload);
+
+    const { role, message } = response.data;
+    await AsyncStorage.setItem("userEmail", form.email.trim());
+
+    Alert.alert("Success", message);
+    console.log("login successful");
+
+    if (role === "admin") {
+      console.log("this is admin");
+      router.push("(tabs)Admin/Home");
+    } else {
+      console.log("this is user");
+      router.push("(tabs)/Home");
+    }
+  } catch (error) {
+    console.error("Login error:", error);
+    if (error.response) {
+      toast.error(error.response.data.message || "An error occurred during login.", {
+        className: "toastify__toast--error",
       });
-
-      const { role, message } = response.data;
-      await AsyncStorage.setItem('userEmail', form.email.trim());
-     
-      Alert.alert("Success", message);
-      console.log('login succfull ')
-
-      if (role === "admin") {
-        console.log('this is admin')
-        router.push("(tabs)Admin/Home");
-      } else {
-        console.log('this is user ')
-
-        router.push("(tabs)/Home");
-      }
-    } catch (error) {
-      console.error("Login error:", error);
-      if (error.response) {
-        toast.error(error.response.data.message || "An error occurred during login.", { className: 'toastify__toast--error' });
-      } else if (error.request) {
-        toast.error("Network Error: Unable to connect to the server.", { className: 'toastify__toast--error' });
-      } else {
-        toast.error("An unexpected error occurred. Please try again.", { className: 'toastify__toast--error' });
-      }
+    } else if (error.request) {
+      toast.error("Network Error: Unable to connect to the server.", {
+        className: "toastify__toast--error",
+      });
+    } else {
+      toast.error("An unexpected error occurred. Please try again.", {
+        className: "toastify__toast--error",
+      });
     }
-  };
-
+  }
+};
   //------------------------------------------------------------------------------------------------------------------------
 
   const handleInputChange = (field, value) => {

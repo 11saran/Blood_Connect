@@ -2,19 +2,28 @@ const db = require('../config/db');
 
 const Disease = {
   async findById(diseaseId) {
-    return db.query("SELECT * FROM disease_table WHERE id = ?", [diseaseId]);
+    const [rows] = await db.query("SELECT * FROM diseases WHERE id = ?", [diseaseId]);
+    return rows[0]; // return single disease
   },
+
   async findAll() {
-    return db.query("SELECT * FROM disease_table");
+    const [rows] = await db.query("SELECT * FROM diseases");
+    return rows;
   },
+
   async create(disease) {
-    return db.query("INSERT INTO disease_table SET ?", disease);
+    const [result] = await db.query("INSERT INTO diseases SET ?", disease);
+    return result.insertId;
   },
+
   async update(diseaseId, diseaseData) {
-    return db.query("UPDATE disease_table SET ? WHERE id = ?", [diseaseData, diseaseId]);
+    const [result] = await db.query("UPDATE diseases SET ? WHERE id = ?", [diseaseData, diseaseId]);
+    return result.affectedRows;
   },
+
   async deleteById(diseaseId) {
-    return db.query("DELETE FROM disease_table WHERE id = ?", [diseaseId]);
+    const [result] = await db.query("DELETE FROM diseases WHERE id = ?", [diseaseId]);
+    return result.affectedRows;
   }
 };
 

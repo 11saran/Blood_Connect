@@ -12,15 +12,19 @@ const UserController = {
   },
 
   async loginUser(req, res) {
-    try {
-      const { email, password } = req.body;
-      const user = await UserService.login({ email, password });
-      
-      res.status(200).json({ message: 'Login successful', role: user.role });
-    } catch (err) {
-      res.status(400).json({ message: err.message });
-    }
-  },
+  try {
+    const { email, password, adminCode } = req.body;
+    if (!email || !password) throw new Error('Email and password are required');
+    const user = await UserService.login({ email, password, adminCode });
+    res.status(200).json({
+      message: 'Login successful',
+      role: user.role,
+      id: user.id,
+    });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+},
 
   async getUsers(req, res) {
     try {
